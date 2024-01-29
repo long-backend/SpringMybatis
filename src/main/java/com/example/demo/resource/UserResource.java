@@ -101,6 +101,13 @@ public class UserResource {
         return new ModelAndView(new RedirectView("/rest/users/paging"));
     }
 
+    @GetMapping("/search")
+    public ModelAndView search() {
+        List<Users> users=  userWithAddressMapper.searchRecords(0,"YoutubeNew123",0);
+        return new ModelAndView("regiter");
+    }
+
+
 
 
 
