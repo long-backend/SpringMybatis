@@ -66,29 +66,58 @@
             <li class="page-item" th:class="${currentPage == 1} ? 'disabled' : ''">
                 <a class="page-link" th:href="@{/rest/users/paging(page=1)}">First</a>
             </li>
-            <li class="page-item" th:class="${currentPage == 1} ? 'disabled' : ''">
+            <li class="page-item" th:if="${currentPage>1}">
                 <a class="page-link" th:href="@{/rest/users/paging(page=${currentPage - 1})}">Previous</a>
             </li>
 <!--            <li class="page-item" th:each="pageNumber : ${#numbers.sequence(1, totalPages)}" th:class="${pageNumber == currentPage} ? 'active' : ''">-->
 <!--                <a class="page-link" th:href="@{/users(page=${pageNumber})}" th:text="${pageNumber}"></a>-->
 <!--            </li>-->
+<!--            th:href="@{/rest/users/paging(page=${currentPage -1})}"-->
             <li class="page-item" th:if="${currentPage>1}"  >
-                <a class="page-link" th:href="@{/rest/users/paging(page=${currentPage -1})}" th:text="${currentPage -1}"></a>
+                <a class="page-link" onclick="getData(this)" th:data-id="${currentPage -1}"  th:text="${currentPage -1}"></a>
             </li>
+<!--            th:href="@{/rest/users/paging(page=${currentPage})}"-->
             <li class="page-item"   th:class="active">
-                <a class="page-link" th:href="@{/rest/users/paging(page=${currentPage})}" th:text="${currentPage}"></a>
+                <a class="page-link" onclick="getData(this)" th:data-id="${currentPage}"  th:text="${currentPage}"></a>
             </li>
-            <li class="page-item" th:if="${currentPage<(totalPages)}"   >
-                <a class="page-link" th:href="@{/rest/users/paging(page=${currentPage +1})}" th:text="${currentPage +1}"></a>
+<!--            th:href="@{/rest/users/paging(page=${currentPage +1})}"-->
+            <li class="page-item"  th:if="${currentPage<(totalPages)}"   >
+                <a class="page-link" onclick="getData(this)" th:data-id="${currentPage+1}" th:text="${currentPage +1}"></a>
             </li>
+<!--            th:href="@{/rest/users/paging(page=${currentPage + 1})}"-->
             <li class="page-item" th:class="${currentPage == totalPages} ? 'disabled' : ''">
-                <a class="page-link" th:href="@{/rest/users/paging(page=${currentPage + 1})}">Next</a>
+                <a class="page-link" onclick="getData(this)" th:data-id="${currentPage+1}" >Next</a>
             </li>
             <li class="page-item" th:class="${currentPage == totalPages} ? 'disabled' : ''">
                 <a class="page-link" th:href="@{/rest/users/paging(page=${totalPages})}">Last</a>
             </li>
         </ul>
     </nav>
+</div>
+
+
+<form th:action="@{/rest/users/search/test}" id="yourForm" method="post" th:object="${search}" class="col-md-6">
+
+    <div class="form-group">
+        <label for="name">Name:</label>
+        <input type="text" id="name" th:field="*{name}" class="form-control" required/>
+    </div>
+
+    <!-- Trường nhập liệu cho Email -->
+    <div class="form-group">
+        <label for="salary">Salary:</label>
+        <input type="number" id="salary" th:field="*{salary}" class="form-control" required/>
+    </div>
+
+    <div class="form-group">
+        <label for="salary">Salary:</label>
+        <input type="hidden" id="page" th:field="*{page}" class="form-control" required/>
+    </div>
+
+    <!-- Nút để gửi dữ liệu form với lớp CSS của Bootstrap -->
+    <button type="submit" class="btn btn-primary">Submit</button>
+
+</form>
 </div>
 <!-- Modal -->
 <div class="modal" id="deleteConfirmationModal">
@@ -111,6 +140,18 @@
 <!-- Dialog -->
 
 <script !src="">
+
+    function getData(element) {
+        var dataId = element.getAttribute('data-id');
+        console.log('Data ID:', dataId);
+
+        var currentPageInput = document.getElementById('page');
+
+        currentPageInput.value = dataId;
+        var form = document.getElementById('yourForm');
+        form.submit();
+        // Thực hiện các thao tác khác với dữ liệu
+    }
 
     var selectedItemId; // Biến để lưu trữ ID của bảng ghi được chọn
 

@@ -1,5 +1,8 @@
 package com.example.demo.model;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
 public class Users {
     public String getName() {
         return name;
@@ -67,7 +70,12 @@ public class Users {
     private String difficultcontent;
     private int difficultcode;
     private int addressid;
+
+    @NotBlank(message = "name cannot be blank")
     private String name;
+
+    @NotNull(message = "salary cannot be blank")
     private Long salary;
+
     private Integer id;
 }

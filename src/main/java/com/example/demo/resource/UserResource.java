@@ -3,13 +3,16 @@ package com.example.demo.resource;
 
 import com.example.demo.mapper.UserWithAddressMapper;
 import com.example.demo.mapper.UsersMapper;
+import com.example.demo.model.SearchDTO;
 import com.example.demo.model.UserWithAddress;
 import com.example.demo.model.Users;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -69,10 +72,18 @@ public class UserResource {
     }
 
     @PostMapping("/updateFinish")
-    public ModelAndView update(Users users) {
+    public ModelAndView update(@Valid @ModelAttribute("users") Users users, BindingResult bindingResult) {
+        ModelAndView modelAndView = new ModelAndView();
+        if (bindingResult.hasErrors()) {
+            modelAndView.setViewName("update");
+            modelAndView.addObject("user",users);
+            //modelAndView.addObject("errors", bindingResult.getAllErrors());
+            return modelAndView;
+        }
         usersMapper.updateUser(users);
         //return ForwardController.forward("/rest/users/paging");
         return new ModelAndView(new RedirectView("/rest/users/paging"));
+
     }
 
     @GetMapping("/paging")
@@ -85,7 +96,9 @@ public class UserResource {
         model.addObject("users",listUsers);
         model.addObject("currentPage",page);
         model.addObject("totalPages",totalPages);
+        model.addObject("search",new SearchDTO());
         model.setViewName("list");
+
         return model;
     }
 
@@ -106,6 +119,31 @@ public class UserResource {
         List<Users> users=  userWithAddressMapper.searchRecords(0,"YoutubeNew123",0);
         return new ModelAndView("regiter");
     }
+
+    @PostMapping("/search/test")
+    public ModelAndView searchTest(@Valid SearchDTO searchDTO,BindingResult bindingResult) {
+        ModelAndView modelAndView = new ModelAndView();
+        if (bindingResult.hasErrors()) {
+            modelAndView.setViewName("update");
+            return modelAndView;
+        }
+
+        return modelAndView;
+
+    }
+
+// for (FieldError error : bindingResult.getFieldErrors()) {
+//        String fieldName = error.getField();
+//        String errorMessage = error.getDefaultMessage();
+//
+//        // Kiểm tra tên trường và set giá trị tương ứng vào model
+//        if ("name".equals(fieldName)) {
+//            modelAndView.addObject("nameError", errorMessage);
+//        } else if ("age".equals(fieldName)) {
+//            modelAndView.addObject("ageError", errorMessage);
+//        }
+//        // Thêm các trường khác nếu cần
+//    }
 
 
 
